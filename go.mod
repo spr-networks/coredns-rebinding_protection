@@ -1,4 +1,4 @@
-module github.com/Z-Fi/coredns-block
+module github.com/SPR-Fi/coredns-rebinding_protection
 
 go 1.16
 
