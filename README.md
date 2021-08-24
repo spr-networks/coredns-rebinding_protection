@@ -21,3 +21,8 @@ Block 0.0.0.0, private addresess, etc
   rebinding_protection
 }
 ```
+
+Test with querying a domain externally that receives an internal IP, for example:
+host 0.0.0.0.nip.io
+
+This should be configured in plugin.cfg to only affect the 'forward' plugin. The 'hosts' plugin should bypass this feature
