@@ -1,4 +1,4 @@
-module github.com/SPR-Fi/coredns-rebinding_protection
+module github.com/spr-networks/coredns-rebinding_protection
 
 go 1.16
 
