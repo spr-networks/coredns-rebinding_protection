@@ -4,12 +4,15 @@ import (
 	"context"
 
 	"github.com/coredns/coredns/plugin"
+	"github.com/coredns/coredns/request"
 	clog "github.com/coredns/coredns/plugin/pkg/log"
 
 	"github.com/miekg/dns"
 	"encoding/json"
 	"strings"
 	"net"
+
+	"github.com/spr-networks/sprbus"
 )
 
 var log = clog.NewWithPlugin("rebinding_protection")
@@ -63,9 +66,20 @@ type ResponseWriterDelay struct {
 	dns.ResponseWriter
 }
 
+type DNSBlockRebindingEvent struct {
+	ClientIP  string
+	BlockedIP string
+	Name      string
+}
+
+func (i *DNSBlockRebindingEvent) String() string {
+	x, _ := json.Marshal(i)
+	return string(x)
+}
 
 // ServeDNS implements the plugin.Handler interface.
 func (b *Block) ServeDNS(ctx context.Context, rw dns.ResponseWriter, r *dns.Msg) (int, error) {
+	state := request.Request{W: rw, Req: r}
 
 	event := &DNSEvent{
 		ResponseWriter: rw,
@@ -94,6 +108,9 @@ func (b *Block) ServeDNS(ctx context.Context, rw dns.ResponseWriter, r *dns.Msg)
 					resp := new(dns.Msg)
 					resp.SetRcode(r, dns.RcodeNameError)
 					rw.WriteMsg(resp)
+
+					event := DNSBlockRebindingEvent{state.IP(), ip.String(), state.Name()}
+					sprbus.Publish("dns:blockrebind:event", event.String())
 
 					return dns.RcodeNameError, nil
 				}
