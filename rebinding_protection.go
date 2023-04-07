@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"github.com/coredns/coredns/plugin"
-	"github.com/coredns/coredns/request"
 	clog "github.com/coredns/coredns/plugin/pkg/log"
+	"github.com/coredns/coredns/request"
 
-	"github.com/miekg/dns"
 	"encoding/json"
-	"strings"
+	"github.com/miekg/dns"
 	"net"
+	"strings"
 
 	"github.com/spr-networks/sprbus"
 )
@@ -25,18 +25,17 @@ type Block struct {
 }
 
 func New() *Block {
-	return &Block{
-	}
+	return &Block{}
 }
 
 type EventData struct {
-  Q []dns.Question
+	Q []dns.Question
 	A []dns.RR
 }
 
 type DNSEvent struct {
 	dns.ResponseWriter
-  data EventData
+	data       EventData
 	delayedMsg *dns.Msg
 }
 
@@ -55,12 +54,11 @@ func (i *DNSEvent) WriteMsg(m *dns.Msg) error {
 }
 
 func (i *DNSEvent) String() string {
-  x, _ := json.Marshal(i.data)
-  return string(x)
+	x, _ := json.Marshal(i.data)
+	return string(x)
 }
 
 //func (plugin JsonLog) ServeDNS(ctx context.Context, rw dns.ResponseWriter, r *dns.Msg) (c int, err error) {
-
 
 type ResponseWriterDelay struct {
 	dns.ResponseWriter
@@ -87,7 +85,7 @@ func (b *Block) ServeDNS(ctx context.Context, rw dns.ResponseWriter, r *dns.Msg)
 
 	c, err := b.Next.ServeDNS(ctx, event, r)
 
-	for _, answer := range(event.data.A) {
+	for _, answer := range event.data.A {
 		answerString := answer.String()
 		parts := strings.Split(answerString, "\t")
 		if len(parts) > 2 {
