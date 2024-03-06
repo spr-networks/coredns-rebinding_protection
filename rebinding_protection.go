@@ -85,7 +85,7 @@ func (b *Block) ServeDNS(ctx context.Context, rw dns.ResponseWriter, r *dns.Msg)
 
 	c, err := b.Next.ServeDNS(ctx, event, r)
 	if err != nil {
-		return c, err 
+		return c, err
 	}
 	for _, answer := range event.data.A {
 		answerString := answer.String()
