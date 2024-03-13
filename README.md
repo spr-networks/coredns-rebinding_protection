@@ -1,5 +1,7 @@
 # Rebinding Protection
 
+NOTE: this has been deprecated and rolled into https://github.com/spr-networks/coredns-block
+See the 'archived-rebinding' branch
 
 ## Name
 
